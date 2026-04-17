@@ -5,7 +5,7 @@ Instalador automático de rice Hyprland baseado no projeto [binnewbs/arch-hyprla
 ## Instalação
 
 ```bash
-git clone https://github.com/SEU-USUARIO/hyprland-auto.git
+git clone https://github.com/snowzintw/hyprland-auto.git
 cd hyprland-auto
 chmod +x install.sh
 ./install.sh
@@ -50,6 +50,6 @@ Sem interação, use um [Personal Access Token](https://github.com/settings/toke
 **Alternativa (site):** crie um repositório vazio `hyprland-auto` no GitHub e rode:
 
 ```bash
-git remote add origin https://github.com/SEU-USUARIO/hyprland-auto.git
+git remote add origin https://github.com/snowzintw/hyprland-auto.git
 git push -u origin main
 ```
