@@ -28,7 +28,7 @@ install_dependencies() {
 
     sudo pacman -S --noconfirm \
         hyprland waybar kitty rofi dunst \
-        zsh git neovim \
+        zsh git neovim curl \
         wl-clipboard grim slurp \
         pipewire wireplumber \
         woff2-font-awesome noto-fonts

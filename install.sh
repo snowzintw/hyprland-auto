@@ -5,8 +5,18 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-LOG_FILE="$SCRIPT_DIR/install.log"
 export SCRIPT_DIR HYPR_AUTO_ROOT="$SCRIPT_DIR"
+
+source "$SCRIPT_DIR/modules/fix.sh"
+
+case "${1:-}" in
+    fix|--fix|repair)
+        fix_hypr_configs
+        exit 0
+        ;;
+esac
+
+LOG_FILE="$SCRIPT_DIR/install.log"
 
 : > "$LOG_FILE"
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -47,3 +57,4 @@ install_rice
 echo ""
 echo "✅ INSTALAÇÃO FINALIZADA!"
 echo "📄 Log salvo em: $LOG_FILE"
+echo "💡 Corrigir só Hyprland sem reinstalar: ./install.sh fix"

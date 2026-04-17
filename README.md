@@ -7,8 +7,16 @@ Instalador automático de rice Hyprland baseado no projeto [binnewbs/arch-hyprla
 ```bash
 git clone https://github.com/snowzintw/hyprland-auto.git
 cd hyprland-auto
-chmod +x install.sh
+chmod +x install.sh restore-hypr-configs.sh
 ./install.sh
+```
+
+**Só corrigir Hyprland** (erros vermelhos, fundo preto, configs) **sem reinstalar tudo**:
+
+```bash
+cd hyprland-auto && git pull
+./install.sh fix
+# ou: ./restore-hypr-configs.sh
 ```
 
 ## O que ele faz
@@ -49,14 +57,9 @@ bash install.sh
 
 **`matugen` e `matugen-bin` em conflito** — o script instala só o que falta: se já existir `matugen-bin`, não tenta instalar `matugen`. Para trocar de um para o outro manualmente: `sudo pacman -Rns matugen-bin` e depois rode o instalador de novo (ou instale `matugen` com o yay).
 
-**Erros `invalid field class: …` (centenas de linhas, nomes tipo `XfceWnck`)** — isso **não** é o `tags.conf` do binnewbs nem o nosso overlay: costuma ser um ficheiro **corrompido ou gerado por outra ferramenta** com sintaxe antiga (`class:…` sem `windowrule` / sem `match:`). O instalador **volta a copiar** `overlays/hypr/configs/tags.conf` e `windowrules.conf` no **final** do passo do rice. Depois de `git pull`, corre **`bash restore-hypr-configs.sh`** na pasta do repo (ou):
+**Erros vermelhos `invalid field class` em `tags.conf`** — o Hyprland **já não carrega** `~/.config/hypr/configs/tags.conf` por defeito: o instalador altera `hyprland.conf` para usar **`hyprland-auto-tags.conf`** e **`hyprland-auto-windowrules.conf`** (sintaxe 0.54), assim mesmo que algo volte a estragar `tags.conf`, **deixa de ser lido**. Corre `./install.sh fix` após `git pull`.
 
-```bash
-chmod +x restore-hypr-configs.sh
-./restore-hypr-configs.sh
-```
-
-Confirma que `~/.config/hypr/hyprland.conf` contém `source = ~/.config/hypr/hyprland-auto.conf` (o instalador acrescenta). O **Matugen** do binnewbs **não** gera `tags.conf`; se tiveres templates personalizados a escrever esse ficheiro, desativa-os.
+**Não tens `restore-hypr-configs.sh`** — faz `git pull` no repositório; o script chama internamente `./install.sh fix`.
 
 **`chsh`: shell not changed** — o `chsh` pede a **password** do teu utilizador e só funciona bem em sessão **interativa**. O instalador agora pergunta antes de chamar `chsh`. Para mudar à mão: `chsh -s /usr/bin/zsh` (no Arch o zsh costuma ser `/usr/bin/zsh`; tem de estar listado em `/etc/shells`).
 
@@ -64,7 +67,7 @@ Confirma que `~/.config/hypr/hyprland.conf` contém `source = ~/.config/hypr/hyp
 
 **`Sync Explicit: awww`** — é normal: no Arch o wallpaper oficial é o pacote **`awww`**, não confundir com um typo de `swww`.
 
-**Fundo preto / sem tema** — o binnewbs arranca só o **daemon** do wallpaper; sem **primeira imagem** o ecrã fica preto. O overlay inclui `set-default-wallpaper.sh` (Matugen + `awww img`) e copia as imagens do repositório para `~/Pictures/wallpapers`. Garante `git pull` e volta a correr o instalador, ou no Hyprland: `Super+W` (wppicker) para escolher wallpaper. `hyprctl reload` após corrigir configs.
+**Fundo preto** — o daemon (`awww-daemon`) arranca, mas sem imagem o fundo fica preto. O script `set-default-wallpaper.sh` usa **Matugen** + **`awww img`**, e se `~/Pictures/wallpapers` estiver vazio tenta **descarregar** uma imagem do [binnewbs no GitHub](https://github.com/binnewbs/arch-hyprland) (precisa de `curl`). Depois de `./install.sh fix`, no Hyprland: **Super+W** (wppicker). Se `$HOME` não expandir no teu Hyprland, edita `hyprland-auto.conf` e usa caminho absoluto para o script.
 
 ## Requisitos
 
