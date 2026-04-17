@@ -1,5 +1,17 @@
 #!/bin/bash
 
+install_matugen_swww() {
+    # matugen e matugen-bin fornecem o mesmo binário — não instalar os dois.
+    if pacman -Qs '^matugen-bin$' >/dev/null 2>&1; then
+        echo "✅ matugen-bin já instalado (equivalente ao matugen)."
+    elif pacman -Qs '^matugen$' >/dev/null 2>&1; then
+        echo "✅ matugen já instalado."
+    else
+        "${AUR_CMD[@]}" matugen
+    fi
+    "${AUR_CMD[@]}" swww
+}
+
 install_dependencies() {
     echo "📥 Instalando dependências..."
 
@@ -10,7 +22,7 @@ install_dependencies() {
         zsh git neovim \
         wl-clipboard grim slurp \
         pipewire wireplumber \
-        ttf-font-awesome noto-fonts
+        woff2-font-awesome noto-fonts
 
-    "${AUR_CMD[@]}" matugen swww
+    install_matugen_swww
 }

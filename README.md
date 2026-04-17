@@ -45,6 +45,10 @@ chmod +x install.sh
 bash install.sh
 ```
 
+**Clone pede usuário/senha no GitHub** — use o URL certo (`snowz**i**ntw`, com **z**). No campo “Password” use um [Personal Access Token](https://github.com/settings/tokens), não a senha da conta. Repositório público não precisa de login se a URL estiver correta.
+
+**`matugen` e `matugen-bin` em conflito** — o script instala só o que falta: se já existir `matugen-bin`, não tenta instalar `matugen`. Para trocar de um para o outro manualmente: `sudo pacman -Rns matugen-bin` e depois rode o instalador de novo (ou instale `matugen` com o yay).
+
 ## Requisitos
 
 - Arch Linux instalado
