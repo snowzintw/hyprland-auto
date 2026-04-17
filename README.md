@@ -35,3 +35,21 @@ chmod +x install.sh
 Arquivo gerado no diretório do instalador:
 
 `install.log`
+
+## Publicar no GitHub
+
+Na pasta do projeto (com [Git](https://git-scm.com/) e [GitHub CLI](https://cli.github.com/) instalados):
+
+```bash
+gh auth login
+gh repo create hyprland-auto --public --source=. --remote=origin --push
+```
+
+Sem interação, use um [Personal Access Token](https://github.com/settings/tokens) com escopo `repo` e defina `GH_TOKEN` no ambiente antes do `gh repo create`.
+
+**Alternativa (site):** crie um repositório vazio `hyprland-auto` no GitHub e rode:
+
+```bash
+git remote add origin https://github.com/SEU-USUARIO/hyprland-auto.git
+git push -u origin main
+```
