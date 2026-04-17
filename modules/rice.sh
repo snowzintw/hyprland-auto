@@ -21,9 +21,44 @@ install_rice() {
 
     cp "$RICE_DIR/.zshrc" ~/
 
-    if [[ "${SHELL:-}" != "/bin/zsh" ]]; then
-        chsh -s /bin/zsh
+    # Shell por defeito: Arch usa /usr/bin/zsh; chsh pede password e falha sem TTY.
+    _zsh_path=""
+    for _c in /usr/bin/zsh /bin/zsh; do
+        [[ -x "$_c" ]] || continue
+        if grep -qxF "$_c" /etc/shells 2>/dev/null; then
+            _zsh_path="$_c"
+            break
+        fi
+    done
+    if [[ -n "$_zsh_path" ]]; then
+        _login_shell="$(getent passwd "$(id -un)" | cut -d: -f7)"
+        if [[ "$_login_shell" == "$_zsh_path" ]]; then
+            echo "✅ Shell de login já é zsh ($_zsh_path)."
+        elif [[ -t 0 ]]; then
+            read -r -p "Alterar shell de login para zsh ($_zsh_path)? Pedirá a password. [s/N]: " _ans
+            case "$_ans" in
+                [sS]|[sS][iI][mM])
+                    if chsh -s "$_zsh_path"; then
+                        echo "✅ Shell alterado. Abra um novo login para aplicar."
+                    else
+                        echo "⚠️ chsh falhou. Corra manualmente: chsh -s $_zsh_path"
+                    fi
+                    ;;
+                *)
+                    echo "ℹ️ Mantido o shell atual. Para zsh depois: chsh -s $_zsh_path"
+                    ;;
+            esac
+        else
+            echo "ℹ️ Sem terminal interativo — não se alterou o shell. Corra: chsh -s $_zsh_path"
+        fi
+    else
+        echo "⚠️ zsh não encontrado ou não está em /etc/shells — instale zsh e confira /etc/shells."
     fi
 
-    swww init || true
+    # swww ≥0.10 removeu `swww init`; o hyprland.conf do rice usa `exec-once = swww-daemon`.
+    if command -v swww-daemon >/dev/null 2>&1; then
+        echo "✅ swww-daemon disponível (arranca com o Hyprland)."
+    elif command -v swww >/dev/null 2>&1; then
+        echo "ℹ️ swww instalado; use swww-daemon no autostart (Hyprland ≥ rice binnewbs)."
+    fi
 }

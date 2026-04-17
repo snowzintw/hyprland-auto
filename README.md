@@ -59,6 +59,10 @@ hyprctl reload
 
 Se o **Matugen** gerar de novo `tags.conf` com formato errado, ajusta o template do Matugen ou exclui `tags.conf` da geração automática.
 
+**`chsh`: shell not changed** — o `chsh` pede a **password** do teu utilizador e só funciona bem em sessão **interativa**. O instalador agora pergunta antes de chamar `chsh`. Para mudar à mão: `chsh -s /usr/bin/zsh` (no Arch o zsh costuma ser `/usr/bin/zsh`; tem de estar listado em `/etc/shells`).
+
+**`swww`: unrecognized subcommand "init"`** — no **swww ≥ 0.10** o comando `init` foi removido; usa-se **`swww-daemon`** (o `hyprland.conf` do binnewbs já tem `exec-once = swww-daemon`). O instalador já não chama `swww init`.
+
 ## Requisitos
 
 - Arch Linux instalado
