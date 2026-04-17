@@ -17,7 +17,7 @@ chmod +x install.sh
 - Instala helper AUR (`yay`) se ainda não existir
 - Detecta GPU (informação; drivers NVIDIA não são instalados automaticamente)
 - Pergunta se você quer backup completo de `~/.config`; se não, faz backup seletivo (`hypr`, `waybar`, `kitty`, `rofi`, `dunst`) e sempre salva `~/.zshrc` em `~/.backup-config`
-- Clona [arch-hyprland](https://github.com/binnewbs/arch-hyprland), copia `.config` e `.zshrc`, define shell para zsh e roda `swww init`
+- Clona [arch-hyprland](https://github.com/binnewbs/arch-hyprland), copia `.config` e `.zshrc`, aplica **overlay** para Hyprland **0.54+** (`tags.conf` + `windowrules.conf` — sintaxe `match:class` / `match:tag`), define shell para zsh e roda `swww init`
 
 ## Problemas comuns
 
@@ -48,6 +48,16 @@ bash install.sh
 **Clone pede usuário/senha no GitHub** — use o URL certo (`snowz**i**ntw`, com **z**). No campo “Password” use um [Personal Access Token](https://github.com/settings/tokens), não a senha da conta. Repositório público não precisa de login se a URL estiver correta.
 
 **`matugen` e `matugen-bin` em conflito** — o script instala só o que falta: se já existir `matugen-bin`, não tenta instalar `matugen`. Para trocar de um para o outro manualmente: `sudo pacman -Rns matugen-bin` e depois rode o instalador de novo (ou instale `matugen` com o yay).
+
+**Erros `invalid field class: …` no Hyprland 0.54** — o rice do binnewbs usa regras antigas (`class:^…$`, `tag:…`). Este repo inclui `overlays/hypr/configs/` compatível com a [sintaxe atual](https://wiki.hypr.land/Configuring/Window-Rules/). O `install.sh` copia esses ficheiros por cima após o clone. Se já instalaste antes, copia à mão ou faz `git pull` e volta a correr só o bloco do rice, ou:
+
+```bash
+cp hyprland-auto/overlays/hypr/configs/tags.conf ~/.config/hypr/configs/
+cp hyprland-auto/overlays/hypr/configs/windowrules.conf ~/.config/hypr/configs/
+hyprctl reload
+```
+
+Se o **Matugen** gerar de novo `tags.conf` com formato errado, ajusta o template do Matugen ou exclui `tags.conf` da geração automática.
 
 ## Requisitos
 
