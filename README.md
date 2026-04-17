@@ -19,6 +19,32 @@ chmod +x install.sh
 - Pergunta se você quer backup completo de `~/.config`; se não, faz backup seletivo (`hypr`, `waybar`, `kitty`, `rofi`, `dunst`) e sempre salva `~/.zshrc` em `~/.backup-config`
 - Clona [arch-hyprland](https://github.com/binnewbs/arch-hyprland), copia `.config` e `.zshrc`, define shell para zsh e roda `swww init`
 
+## Problemas comuns
+
+**`fatal: destination path 'hyprland-auto' already exists`** — a pasta já existe. Ou entre nela e atualize (`cd hyprland-auto && git pull`), ou apague/renomeie e clone de novo:
+
+```bash
+rm -rf hyprland-auto
+git clone https://github.com/snowzintw/hyprland-auto.git
+cd hyprland-auto
+```
+
+**`chmod` / `./install.sh`: no such file or directory** — você não está dentro da pasta do repo, ou o caminho está errado. Confira:
+
+```bash
+pwd
+ls install.sh
+```
+
+Se `install.sh` existir mas `./install.sh` falhar no zsh, converta fins de linha (Windows CRLF) e rode com bash:
+
+```bash
+sudo pacman -S --needed dos2unix
+dos2unix install.sh modules/*.sh
+chmod +x install.sh
+bash install.sh
+```
+
 ## Requisitos
 
 - Arch Linux instalado
