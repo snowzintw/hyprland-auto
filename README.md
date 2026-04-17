@@ -17,7 +17,7 @@ chmod +x install.sh
 - Instala helper AUR (`yay`) se ainda não existir
 - Detecta GPU (informação; drivers NVIDIA não são instalados automaticamente)
 - Pergunta se você quer backup completo de `~/.config`; se não, faz backup seletivo (`hypr`, `waybar`, `kitty`, `rofi`, `dunst`) e sempre salva `~/.zshrc` em `~/.backup-config`
-- Clona [arch-hyprland](https://github.com/binnewbs/arch-hyprland), copia `.config` e `.zshrc`, aplica **overlay** para Hyprland **0.54+** (`tags.conf` + `windowrules.conf`), alinha **awww** no Arch (sucessor do **swww** nos repositórios oficiais), opção de shell zsh
+- Clona o [arch-hyprland](https://github.com/binnewbs/arch-hyprland) (último `main`), copia `.config` e `.zshrc`, aplica **overlay** Hyprland **0.54+** (`tags.conf`, `windowrules.conf`, `hyprland-auto.conf`, script de wallpaper inicial), **matugen** com comando **awww**, copia **wallpapers** para `~/Pictures/wallpapers`, alinha **swww→awww** só onde faz sentido, opção de shell zsh
 
 ## Problemas comuns
 
@@ -49,21 +49,22 @@ bash install.sh
 
 **`matugen` e `matugen-bin` em conflito** — o script instala só o que falta: se já existir `matugen-bin`, não tenta instalar `matugen`. Para trocar de um para o outro manualmente: `sudo pacman -Rns matugen-bin` e depois rode o instalador de novo (ou instale `matugen` com o yay).
 
-**Erros `invalid field class: …` no Hyprland 0.54** — o rice do binnewbs usa regras antigas (`class:^…$`, `tag:…`). Este repo inclui `overlays/hypr/configs/` compatível com a [sintaxe atual](https://wiki.hypr.land/Configuring/Window-Rules/). O `install.sh` copia esses ficheiros por cima após o clone. Se já instalaste antes, copia à mão ou faz `git pull` e volta a correr só o bloco do rice, ou:
+**Erros `invalid field class: …` (centenas de linhas, nomes tipo `XfceWnck`)** — isso **não** é o `tags.conf` do binnewbs nem o nosso overlay: costuma ser um ficheiro **corrompido ou gerado por outra ferramenta** com sintaxe antiga (`class:…` sem `windowrule` / sem `match:`). O instalador **volta a copiar** `overlays/hypr/configs/tags.conf` e `windowrules.conf` no **final** do passo do rice. Depois de `git pull`, corre **`bash restore-hypr-configs.sh`** na pasta do repo (ou):
 
 ```bash
-cp hyprland-auto/overlays/hypr/configs/tags.conf ~/.config/hypr/configs/
-cp hyprland-auto/overlays/hypr/configs/windowrules.conf ~/.config/hypr/configs/
-hyprctl reload
+chmod +x restore-hypr-configs.sh
+./restore-hypr-configs.sh
 ```
 
-Se o **Matugen** gerar de novo `tags.conf` com formato errado, ajusta o template do Matugen ou exclui `tags.conf` da geração automática.
+Confirma que `~/.config/hypr/hyprland.conf` contém `source = ~/.config/hypr/hyprland-auto.conf` (o instalador acrescenta). O **Matugen** do binnewbs **não** gera `tags.conf`; se tiveres templates personalizados a escrever esse ficheiro, desativa-os.
 
 **`chsh`: shell not changed** — o `chsh` pede a **password** do teu utilizador e só funciona bem em sessão **interativa**. O instalador agora pergunta antes de chamar `chsh`. Para mudar à mão: `chsh -s /usr/bin/zsh` (no Arch o zsh costuma ser `/usr/bin/zsh`; tem de estar listado em `/etc/shells`).
 
 **`swww`: unrecognized subcommand "init"`** — versões recentes não têm `init`; o daemon arranca com **`exec-once`** no Hyprland. No **Arch**, o pacote em [extra] chama-se **`awww`** (binários `awww` e **`awww-daemon`**); o instalador instala `awww` e substitui referências `swww`/`swww-daemon` nos configs copiados. Se ainda vires o erro, faz **`git pull`** e volta a correr o script (ou remove o pacote AUR antigo `swww` se estiver a conflituar).
 
 **`Sync Explicit: awww`** — é normal: no Arch o wallpaper oficial é o pacote **`awww`**, não confundir com um typo de `swww`.
+
+**Fundo preto / sem tema** — o binnewbs arranca só o **daemon** do wallpaper; sem **primeira imagem** o ecrã fica preto. O overlay inclui `set-default-wallpaper.sh` (Matugen + `awww img`) e copia as imagens do repositório para `~/Pictures/wallpapers`. Garante `git pull` e volta a correr o instalador, ou no Hyprland: `Super+W` (wppicker) para escolher wallpaper. `hyprctl reload` após corrigir configs.
 
 ## Requisitos
 
@@ -73,7 +74,7 @@ Se o **Matugen** gerar de novo `tags.conf` com formato errado, ajusta o template
 ## Observações
 
 - NVIDIA pode exigir drivers/config extra; o script só detecta a placa.
-- Recomenda-se revisar configs do rice original se mudar backend de wallpaper (o autor usa **swww** + **Matugen**).
+- No Arch o pacote chama-se **awww** (equivalente moderno); **Matugen** continua a gerar cores para waybar, kitty, hypr, etc.
 - Log da execução: `install.log` na pasta do repositório.
 
 ## Logs
