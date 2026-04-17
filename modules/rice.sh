@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# HYPR_RICE_URL — URL do rice (por defeito binnewbs). Ex.: export HYPR_RICE_URL=https://github.com/binnewbs/arch-hyprland.git
+# HYPR_SKIP_OVERLAY=1 — só copia o .config do rice, sem overlays Hyprland 0.54 / matugen do instalador (para rices com estrutura própria)
+
 apply_after_arch_clone() {
     local RICE_DIR="${1:?}"
 
@@ -14,20 +17,31 @@ apply_after_arch_clone() {
 
     apply_awww_sed_safe
     patch_hyprland_conf_sources
+    patch_hyprland_monitor_fallback
     download_fallback_wallpaper_if_empty
 }
 
 install_rice() {
     echo "🎨 Instalando rice…"
 
-    RICE_DIR="${SCRIPT_DIR}/arch-hyprland"
+    local RICE_GIT_URL="${HYPR_RICE_URL:-https://github.com/binnewbs/arch-hyprland.git}"
+    RICE_DIR="${SCRIPT_DIR}/rice-upstream"
     rm -rf "$RICE_DIR"
-    git clone --depth 1 https://github.com/binnewbs/arch-hyprland.git "$RICE_DIR"
+    git clone --depth 1 "$RICE_GIT_URL" "$RICE_DIR"
 
     mkdir -p ~/.config
     cp -a "$RICE_DIR/.config/." ~/.config/
 
-    apply_after_arch_clone "$RICE_DIR"
+    if [[ "${HYPR_SKIP_OVERLAY:-}" == "1" ]]; then
+        echo "⚠️ HYPR_SKIP_OVERLAY=1 — overlays do instalador não aplicados; usa só o rice clonado."
+        download_fallback_wallpaper_if_empty
+    else
+        if [[ "$RICE_GIT_URL" != *"binnewbs/arch-hyprland"* ]]; then
+            echo "⚠️ Rice não-binnewbs: os overlays (Hyprland 0.54, matugen awww) podem não coincidir com esta repo."
+            echo "   Se algo falhar, tenta: HYPR_SKIP_OVERLAY=1 ./install.sh"
+        fi
+        apply_after_arch_clone "$RICE_DIR"
+    fi
 
     if command -v awww >/dev/null 2>&1; then
         echo "✅ awww disponível (wallpaper Arch extra)."
@@ -38,7 +52,11 @@ install_rice() {
         echo "✅ swww (AUR) — matugen ajustado para swww."
     fi
 
-    cp "$RICE_DIR/.zshrc" ~/
+    if [[ -f "$RICE_DIR/.zshrc" ]]; then
+        cp "$RICE_DIR/.zshrc" ~/
+    else
+        echo "ℹ️ Este rice não tem .zshrc na raiz — ignorado."
+    fi
 
     _zsh_path=""
     for _c in /usr/bin/zsh /bin/zsh; do
@@ -78,6 +96,8 @@ install_rice() {
     fi
 
     echo ""
-    echo "👉 O Hyprland já NÃO usa tags.conf (usa hyprland-auto-tags.conf)."
+    if [[ "${HYPR_SKIP_OVERLAY:-}" != "1" ]]; then
+        echo "👉 O Hyprland foi patchado para hyprland-auto-tags.conf (quando aplicável)."
+    fi
     echo "👉 Depois do login: hyprctl reload"
 }

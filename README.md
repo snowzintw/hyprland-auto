@@ -25,7 +25,7 @@ cd hyprland-auto && git pull
 - Instala helper AUR (`yay`) se ainda não existir
 - Detecta GPU (informação; drivers NVIDIA não são instalados automaticamente)
 - Pergunta se você quer backup completo de `~/.config`; se não, faz backup seletivo (`hypr`, `waybar`, `kitty`, `rofi`, `dunst`) e sempre salva `~/.zshrc` em `~/.backup-config`
-- Clona o [arch-hyprland](https://github.com/binnewbs/arch-hyprland) (último `main`), copia `.config` e `.zshrc`, aplica **overlay** Hyprland **0.54+** (`tags.conf`, `windowrules.conf`, `hyprland-auto.conf`, script de wallpaper inicial), **matugen** com comando **awww**, copia **wallpapers** para `~/Pictures/wallpapers`, alinha **swww→awww** só onde faz sentido, opção de shell zsh
+- Clona o rice (por defeito [binnewbs/arch-hyprland](https://github.com/binnewbs/arch-hyprland), ou `HYPR_RICE_URL`), copia `.config` e `.zshrc` se existir, aplica **overlay** Hyprland **0.54+** (exceto com `HYPR_SKIP_OVERLAY=1`), **matugen** com **awww**, wallpapers, opção de shell zsh
 
 ## Problemas comuns
 
@@ -68,6 +68,33 @@ bash install.sh
 **`Sync Explicit: awww`** — é normal: no Arch o wallpaper oficial é o pacote **`awww`**, não confundir com um typo de `swww`.
 
 **Fundo preto** — causas comuns: (1) **monitor** do binnewbs é `eDP-1`; se o teu output tiver outro nome, o compositor pode mostrar preto — `./install.sh fix` substitui por `monitor = , preferred, auto, 1`. (2) **`exec-once` com `$HOME`** — em alguns setups o Hyprland não expande; o `hyprland-auto.conf` usa `/bin/sh -c '...'`. (3) **awww** sem imagem — o script regista tudo em **`/tmp/hyprland-auto-wallpaper.log`**; se `awww img` falhar, tenta **swaybg** (pacote `swaybg`). Depois do fix: `hyprctl reload`, **Super+W** para escolher wallpaper.
+
+**Só o hyprlock / bloqueio “parece certo” e o resto não** — o lock usa `hyprlock.conf` (menos dependências de tema global). Waybar, cores Matugen/wallust, wallpaper e regras Hyprland 0.54 são caminhos diferentes; por isso convém um rice **mantido** e scripts oficiais desse rice.
+
+## Alternativas de rice (GitHub mais novos / parecidos)
+
+| Repo | Notas |
+|------|--------|
+| [LinuxBeginnings/Hyprland-Dots](https://github.com/LinuxBeginnings/Hyprland-Dots) | Continuação dos dots do JaKooLit; **waybar**, temas, wiki e scripts por distro. Em Arch usa o projeto [Arch-Hyprland](https://github.com/LinuxBeginnings/Arch-Hyprland) (instala dependências e opcionalmente estes dots). |
+| [JaKooLit/Hyprland-Dots](https://github.com/JaKooLit/Hyprland-Dots) | Clássico muito usado; o README aponta para **LinuxBeginnings** como manutenção futura. |
+| [end-4/dots-hyprland](https://github.com/end-4/dots-hyprland) | Muito popular; stack diferente (**Quickshell**, etc.), não é “só trocar URL” com este instalador. |
+| [binnewbs/arch-hyprland](https://github.com/binnewbs/arch-hyprland) | Rice **por defeito** deste instalador (Matugen + waybar + estilo semelhante). |
+
+**Usar outro URL de rice com este instalador** (avançado — os overlays foram pensados para o binnewbs):
+
+```bash
+export HYPR_RICE_URL=https://github.com/binnewbs/arch-hyprland.git
+./install.sh
+```
+
+Se o rice tiver **estrutura própria** e os nossos patches estragarem algo:
+
+```bash
+export HYPR_SKIP_OVERLAY=1
+./install.sh
+```
+
+O clone fica em `rice-upstream/` dentro da pasta do projeto.
 
 ## Requisitos
 
