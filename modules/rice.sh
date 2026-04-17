@@ -19,6 +19,20 @@ install_rice() {
         echo "✅ Aplicado overlay Hyprland 0.54 (tags.conf + windowrules.conf)."
     fi
 
+    # Arch [extra]: wallpaper chama-se "awww" (antes swww). Ajustar hypr + matugen do binnewbs.
+    if command -v awww >/dev/null 2>&1; then
+        if [[ -f ~/.config/hypr/hyprland.conf ]]; then
+            sed -i 's/^exec-once = swww-daemon/exec-once = awww-daemon/' ~/.config/hypr/hyprland.conf
+        fi
+        if [[ -f ~/.config/matugen/config.toml ]]; then
+            sed -i 's/^command = "swww"/command = "awww"/' ~/.config/matugen/config.toml
+        fi
+        while IFS= read -r -d '' _f; do
+            sed -i 's/swww-daemon/awww-daemon/g;s/\bswww\b/awww/g' "$_f"
+        done < <(find ~/.config/hypr -type f \( -name '*.sh' -o -name '*.conf' \) -print0 2>/dev/null)
+        echo "✅ Comandos de wallpaper alinhados com awww (Arch extra)."
+    fi
+
     cp "$RICE_DIR/.zshrc" ~/
 
     # Shell por defeito: Arch usa /usr/bin/zsh; chsh pede password e falha sem TTY.
@@ -55,10 +69,10 @@ install_rice() {
         echo "⚠️ zsh não encontrado ou não está em /etc/shells — instale zsh e confira /etc/shells."
     fi
 
-    # swww ≥0.10 removeu `swww init`; o hyprland.conf do rice usa `exec-once = swww-daemon`.
-    if command -v swww-daemon >/dev/null 2>&1; then
-        echo "✅ swww-daemon disponível (arranca com o Hyprland)."
-    elif command -v swww >/dev/null 2>&1; then
-        echo "ℹ️ swww instalado; use swww-daemon no autostart (Hyprland ≥ rice binnewbs)."
+    # awww/swww: não chamar `swww init` (removido); o daemon sobe com exec-once no hyprland.conf.
+    if command -v awww-daemon >/dev/null 2>&1; then
+        echo "✅ awww-daemon disponível (autostart no Hyprland)."
+    elif command -v swww-daemon >/dev/null 2>&1; then
+        echo "✅ swww-daemon disponível (autostart no Hyprland)."
     fi
 }

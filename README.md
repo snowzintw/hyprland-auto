@@ -17,7 +17,7 @@ chmod +x install.sh
 - Instala helper AUR (`yay`) se ainda não existir
 - Detecta GPU (informação; drivers NVIDIA não são instalados automaticamente)
 - Pergunta se você quer backup completo de `~/.config`; se não, faz backup seletivo (`hypr`, `waybar`, `kitty`, `rofi`, `dunst`) e sempre salva `~/.zshrc` em `~/.backup-config`
-- Clona [arch-hyprland](https://github.com/binnewbs/arch-hyprland), copia `.config` e `.zshrc`, aplica **overlay** para Hyprland **0.54+** (`tags.conf` + `windowrules.conf` — sintaxe `match:class` / `match:tag`), define shell para zsh e roda `swww init`
+- Clona [arch-hyprland](https://github.com/binnewbs/arch-hyprland), copia `.config` e `.zshrc`, aplica **overlay** para Hyprland **0.54+** (`tags.conf` + `windowrules.conf`), alinha **awww** no Arch (sucessor do **swww** nos repositórios oficiais), opção de shell zsh
 
 ## Problemas comuns
 
@@ -61,7 +61,9 @@ Se o **Matugen** gerar de novo `tags.conf` com formato errado, ajusta o template
 
 **`chsh`: shell not changed** — o `chsh` pede a **password** do teu utilizador e só funciona bem em sessão **interativa**. O instalador agora pergunta antes de chamar `chsh`. Para mudar à mão: `chsh -s /usr/bin/zsh` (no Arch o zsh costuma ser `/usr/bin/zsh`; tem de estar listado em `/etc/shells`).
 
-**`swww`: unrecognized subcommand "init"`** — no **swww ≥ 0.10** o comando `init` foi removido; usa-se **`swww-daemon`** (o `hyprland.conf` do binnewbs já tem `exec-once = swww-daemon`). O instalador já não chama `swww init`.
+**`swww`: unrecognized subcommand "init"`** — versões recentes não têm `init`; o daemon arranca com **`exec-once`** no Hyprland. No **Arch**, o pacote em [extra] chama-se **`awww`** (binários `awww` e **`awww-daemon`**); o instalador instala `awww` e substitui referências `swww`/`swww-daemon` nos configs copiados. Se ainda vires o erro, faz **`git pull`** e volta a correr o script (ou remove o pacote AUR antigo `swww` se estiver a conflituar).
+
+**`Sync Explicit: awww`** — é normal: no Arch o wallpaper oficial é o pacote **`awww`**, não confundir com um typo de `swww`.
 
 ## Requisitos
 
