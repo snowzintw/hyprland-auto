@@ -12,7 +12,7 @@ source "$SCRIPT_DIR/modules/fix.sh"
 case "${1:-}" in
     fix|--fix|repair)
         fix_hypr_configs
-        exit 0
+        exit $?
         ;;
 esac
 

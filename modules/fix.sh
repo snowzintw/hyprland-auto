@@ -65,10 +65,11 @@ fix_hypr_configs() {
     apply_awww_sed_safe
     download_fallback_wallpaper_if_empty
     if command -v hyprctl >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
-        hyprctl reload && echo "✅ hyprctl reload"
+        hyprctl reload && echo "✅ hyprctl reload" || echo "⚠️ hyprctl reload falhou — tenta de novo dentro do Hyprland."
     else
         echo "✅ Config atualizada. No Hyprland: hyprctl reload"
     fi
+    return 0
 }
 
 # Se ~/Pictures/wallpapers estiver vazio, descarrega uma imagem do binnewbs (GitHub raw)
