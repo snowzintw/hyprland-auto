@@ -67,7 +67,7 @@ bash install.sh
 
 **`Sync Explicit: awww`** — é normal: no Arch o wallpaper oficial é o pacote **`awww`**, não confundir com um typo de `swww`.
 
-**Fundo preto** — o daemon (`awww-daemon`) arranca, mas sem imagem o fundo fica preto. O script `set-default-wallpaper.sh` usa **Matugen** + **`awww img`**, e se `~/Pictures/wallpapers` estiver vazio tenta **descarregar** uma imagem do [binnewbs no GitHub](https://github.com/binnewbs/arch-hyprland) (precisa de `curl`). Depois de `./install.sh fix`, no Hyprland: **Super+W** (wppicker). Se `$HOME` não expandir no teu Hyprland, edita `hyprland-auto.conf` e usa caminho absoluto para o script.
+**Fundo preto** — causas comuns: (1) **monitor** do binnewbs é `eDP-1`; se o teu output tiver outro nome, o compositor pode mostrar preto — `./install.sh fix` substitui por `monitor = , preferred, auto, 1`. (2) **`exec-once` com `$HOME`** — em alguns setups o Hyprland não expande; o `hyprland-auto.conf` usa `/bin/sh -c '...'`. (3) **awww** sem imagem — o script regista tudo em **`/tmp/hyprland-auto-wallpaper.log`**; se `awww img` falhar, tenta **swaybg** (pacote `swaybg`). Depois do fix: `hyprctl reload`, **Super+W** para escolher wallpaper.
 
 ## Requisitos
 

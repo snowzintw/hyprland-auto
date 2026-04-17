@@ -31,7 +31,7 @@ install_dependencies() {
         zsh git neovim curl \
         wl-clipboard grim slurp \
         pipewire wireplumber \
-        woff2-font-awesome noto-fonts
+        woff2-font-awesome noto-fonts swaybg
 
     install_matugen_wallpaper
 }
